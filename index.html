@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>将棋タイトル戦 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a0a00;
+    --paper: #f5efe6;
+    --aged: #e8dcc8;
+    --accent: #8b1a1a;
+    --gold: #c8943a;
+    --light-ink: #5a3e2b;
+    --border: #c4a882;
+    --search-bg: #0f1923;
+    --search-accent: #e8c47a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4a882' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 18px 16px 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '将';
+    position: absolute;
+    right: -10px; top: -20px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 120px; font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+  }
+  .header-sub { font-size: 10px; letter-spacing: 3px; color: var(--gold); font-weight: 300; margin-bottom: 4px; }
+  .header-title { font-family: 'Noto Serif JP', serif; font-size: 24px; font-weight: 900; letter-spacing: 2px; line-height: 1.2; }
+  .header-title span { color: var(--gold); }
+  .header-date { margin-top: 6px; font-size: 10px; color: rgba(245,239,230,0.45); letter-spacing: 1px; }
+
+  /* ── SEARCH BAR ── */
+  .search-section {
+    background: var(--search-bg);
+    padding: 12px 14px 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  }
+  .search-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--search-accent);
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .search-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(232,196,122,0.2);
+  }
+  .search-box {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .search-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(232,196,122,0.3);
+    border-radius: 3px;
+    color: white;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .search-input::placeholder { color: rgba(255,255,255,0.3); font-size: 13px; }
+  .search-input:focus { border-color: var(--search-accent); }
+  .search-btn {
+    background: var(--search-accent);
+    border: none;
+    border-radius: 3px;
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 0 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
+    -webkit-appearance: none;
+  }
+  .search-btn:active { opacity: 0.8; transform: scale(0.97); }
+  .search-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* chips */
+  .search-chips {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .search-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(232,196,122,0.2);
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .search-chip:active, .search-chip:hover { background: rgba(232,196,122,0.15); color: var(--search-accent); border-color: rgba(232,196,122,0.5); }
+
+  /* ── AI RESULT PANEL ── */
+  #ai-result {
+    display: none;
+    background: var(--search-bg);
+    border-top: 1px solid rgba(232,196,122,0.15);
+    padding: 12px 14px 16px;
+    animation: slideDown 0.25s ease;
+  }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  #ai-result.visible { display: block; }
+  .ai-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .ai-badge {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--search-accent);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .ai-dot {
+    width: 6px; height: 6px;
+    background: var(--search-accent);
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+  .ai-close {
+    background: none; border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 16px; cursor: pointer;
+    padding: 2px 4px;
+    line-height: 1;
+  }
+  #ai-text {
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .thinking {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .thinking-dot {
+    width: 5px; height: 5px;
+    background: var(--search-accent);
+    border-radius: 50%;
+    animation: bounce 1s infinite;
+  }
+  .thinking-dot:nth-child(2) { animation-delay: 0.15s; }
+  .thinking-dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce { 0%,100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-4px); opacity: 1; } }
+
+  /* ── HOLDER BAR ── */
+  .holder-bar {
+    background: var(--accent);
+    padding: 9px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .holder-label { font-size: 10px; color: rgba(255,255,255,0.7); letter-spacing: 2px; white-space: nowrap; }
+  .holder-chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .chip { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 2px; font-family: 'Noto Serif JP', serif; font-weight: 700; }
+  .chip.fujii { background: rgba(200,148,58,0.3); border-color: var(--gold); }
+
+  /* ── SECTION ── */
+  .section-header { padding: 14px 16px 6px; display: flex; align-items: center; gap: 8px; }
+  .section-label { font-size: 10px; letter-spacing: 3px; color: var(--light-ink); font-weight: 700; }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* ── TITLE CARD ── */
+  .title-card {
+    margin: 0 12px 10px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 2px 2px 0 rgba(196,168,130,0.3);
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .title-card:nth-child(1) { animation-delay: 0.05s; }
+  .title-card:nth-child(2) { animation-delay: 0.1s; }
+  .title-card:nth-child(3) { animation-delay: 0.15s; }
+
+  .card-header { display: flex; align-items: stretch; border-bottom: 1px solid var(--aged); }
+  .card-banner { width: 6px; flex-shrink: 0; }
+  .card-title-info { flex: 1; padding: 10px 12px 8px; }
+  .title-name { font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 900; letter-spacing: 1px; line-height: 1; }
+  .title-period { font-size: 10px; color: var(--light-ink); margin-top: 2px; letter-spacing: 1px; }
+  .card-status { display: flex; align-items: center; padding: 0 12px; }
+  .status-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 2px; letter-spacing: 1px; white-space: nowrap; }
+  .status-ongoing { background: #fff3cd; color: #856404; border: 1px solid #ffc107; animation: pulse 2s infinite; }
+  .status-upcoming { background: #e8f4e8; color: #2d5a2d; border: 1px solid #86b886; }
+  .status-decided { background: #e8edf5; color: #2d3f6b; border: 1px solid #8899cc; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  /* ── MATCHUP ── */
+  .matchup { padding: 10px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--aged); background: var(--paper); }
+  .player { flex: 1; text-align: center; }
+  .player-role { font-size: 9px; letter-spacing: 1px; color: var(--light-ink); margin-bottom: 2px; }
+  .player-name { font-family: 'Noto Serif JP', serif; font-size: 14px; font-weight: 700; line-height: 1.2; }
+  .player-rank { font-size: 10px; color: var(--light-ink); }
+  .vs-divider { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 900; color: var(--accent); flex-shrink: 0; }
+
+  /* ── SCORE ── */
+  .score-row { padding: 8px 12px; background: var(--ink); display: flex; align-items: center; gap: 4px; border-bottom: 1px solid var(--aged); }
+  .score-label { font-size: 9px; color: rgba(245,239,230,0.5); letter-spacing: 2px; margin-right: 4px; white-space: nowrap; }
+  .score-dots { display: flex; gap: 3px; flex: 1; }
+  .dot { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .dot-win-a { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  .dot-win-b { background: #8899cc; border-color: #8899cc; color: white; }
+  .dot-empty { background: transparent; }
+  .score-text { font-size: 12px; font-weight: 700; color: var(--gold); margin-left: auto; white-space: nowrap; }
+
+  /* ── SCHEDULE ── */
+  .schedule-list { padding: 8px 12px 10px; }
+  .schedule-item { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(196,168,130,0.2); }
+  .schedule-item:last-child { border-bottom: none; }
+  .game-num { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 700; color: var(--accent); width: 28px; flex-shrink: 0; padding-top: 1px; }
+  .game-date { font-size: 12px; font-weight: 700; color: var(--ink); flex: 1; line-height: 1.4; }
+  .game-date .date-sub { font-size: 10px; font-weight: 300; color: var(--light-ink); display: block; }
+  .game-result { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 2px; flex-shrink: 0; margin-top: 1px; }
+  .result-a { background: #fff3cd; color: #856404; }
+  .result-b { background: #e8edf5; color: #2d3f6b; }
+  .result-next { background: var(--accent); color: white; animation: pulse 2s infinite; font-size: 9px; letter-spacing: 1px; }
+  .result-future { background: var(--aged); color: var(--light-ink); }
+
+  /* ── UPCOMING ── */
+  .upcoming-card { margin: 0 12px 10px; border: 1px dashed var(--border); border-radius: 3px; padding: 12px; animation: fadeUp 0.4s ease both; animation-delay: 0.3s; }
+  .upcoming-item { display: flex; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(196,168,130,0.2); align-items: center; }
+  .upcoming-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .up-date { font-size: 12px; font-weight: 700; color: var(--accent); width: 52px; flex-shrink: 0; }
+  .up-title { font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 700; flex: 1; }
+  .up-sub { font-size: 10px; color: var(--light-ink); font-weight: 300; }
+
+  footer { margin-top: 8px; padding: 16px; text-align: center; font-size: 10px; color: var(--light-ink); letter-spacing: 1px; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-sub">SHOGI TITLE MATCHES 2025–26</div>
+  <div class="header-title">将棋<span>八大</span>タイトル戦</div>
+  <div class="header-date">2026年（令和8年）スケジュール</div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-label">AI検索</div>
+  <div class="search-box">
+    <input
+      class="search-input"
+      id="search-input"
+      type="text"
+      placeholder="例：棋王戦の現在の状況は？"
+      autocomplete="off"
+    />
+    <button class="search-btn" id="search-btn" onclick="doSearch()">検索</button>
+  </div>
+  <div class="search-chips">
+    <span class="search-chip" onclick="quickSearch('棋王戦の現在のスコアは？')">棋王戦スコア</span>
+    <span class="search-chip" onclick="quickSearch('王将戦の次の対局はいつ？')">王将戦日程</span>
+    <span class="search-chip" onclick="quickSearch('名人戦の挑戦者は誰？')">名人戦</span>
+    <span class="search-chip" onclick="quickSearch('叡王戦の挑戦者は誰に決まった？')">叡王戦</span>
+    <span class="search-chip" onclick="quickSearch('藤井聡太は現在何冠？')">藤井聡太</span>
+  </div>
+</div>
+
+<!-- AI RESULT -->
+<div id="ai-result">
+  <div class="ai-result-header">
+    <div class="ai-badge"><div class="ai-dot" id="ai-dot"></div>AI RESPONSE</div>
+    <button class="ai-close" onclick="closeResult()">✕</button>
+  </div>
+  <div id="ai-text"></div>
+</div>
+
+<!-- HOLDER BAR -->
+<div class="holder-bar">
+  <div class="holder-label">現保持者</div>
+  <div class="holder-chips">
+    <div class="chip fujii">藤井聡太 六冠</div>
+    <div class="chip">伊藤匠 二冠</div>
+  </div>
+</div>
+
+<!-- 進行中 -->
+<div class="section-header">
+  <div class="section-label">進行中</div>
+  <div class="section-line"></div>
+</div>
+
+<!-- 王将戦 -->
+<div class="title-card">
+  <div class="card-header">
+    <div class="card-banner" style="background:#8b1a1a;"></div>
+    <div class="card-title-info">
+      <div class="title-name">王将戦</div>
+      <div class="title-period">第75期 七番勝負</div>
+    </div>
+    <div class="card-status">
+      <div class="status-badge status-ongoing">● 進行中</div>
+    </div>
+  </div>
+  <div class="matchup">
+    <div class="player">
+      <div class="player-role">王将（防衛側）</div>
+      <div class="player-name">藤井聡太</div>
+      <div class="player-rank">王将</div>
+    </div>
+    <div class="vs-divider">対</div>
+    <div class="player">
+      <div class="player-role">挑戦者</div>
+      <div class="player-name">永瀬拓矢</div>
+      <div class="player-rank">九段</div>
+    </div>
+  </div>
+  <div class="score-row">
+    <div class="score-label">SCORE</div>
+    <div class="score-dots">
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-b">永</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-empty"></div>
+      <div class="dot dot-empty"></div>
+    </div>
+    <div class="score-text">藤井 4–1</div>
+  </div>
+  <div class="schedule-list">
+    <div class="schedule-item">
+      <div class="game-num">第1局</div>
+      <div class="game-date">1/11–12<span class="date-sub">京都府・嵐山温泉 花伝抄</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第2局</div>
+      <div class="game-date">1/24–25<span class="date-sub">奈良県・奈良ホテル</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第3局</div>
+      <div class="game-date">2/3–4<span class="date-sub">山梨県・常磐ホテル</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第4局</div>
+      <div class="game-date">2/17–18<span class="date-sub">大阪府</span></div>
+      <div class="game-result result-b">永瀬勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第5局</div>
+      <div class="game-date">3/8–9<span class="date-sub">栃木県・大田原市</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第6局</div>
+      <div class="game-date">3/18–19<span class="date-sub">未定</span></div>
+      <div class="game-result result-future">予定</div>
+    </div>
+  </div>
+</div>
+
+<!-- 棋王戦 -->
+<div class="title-card">
+  <div class="card-header">
+    <div class="card-banner" style="background:#2d5a2d;"></div>
+    <div class="card-title-info">
+      <div class="title-name">棋王戦</div>
+      <div class="title-period">第51期 五番勝負</div>
+    </div>
+    <div class="card-status">
+      <div class="status-badge status-ongoing">● 進行中</div>
+    </div>
+  </div>
+  <div class="matchup">
+    <div class="player">
+      <div class="player-role">棋王（防衛側）</div>
+      <div class="player-name">藤井聡太</div>
+      <div class="player-rank">棋王</div>
+    </div>
+    <div class="vs-divider">対</div>
+    <div class="player">
+      <div class="player-role">挑戦者</div>
+      <div class="player-name">増田康宏</div>
+      <div class="player-rank">八段</div>
+    </div>
+  </div>
+  <div class="score-row">
+    <div class="score-label">SCORE</div>
+    <div class="score-dots">
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-b">増</div>
+      <div class="dot dot-win-b">増</div>
+      <div class="dot dot-empty"></div>
+      <div class="dot dot-empty"></div>
+    </div>
+    <div class="score-text">増田リード 2–1</div>
+  </div>
+  <div class="schedule-list">
+    <div class="schedule-item">
+      <div class="game-num">第1局</div>
+      <div class="game-date">2/8<span class="date-sub">石川県</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第2局</div>
+      <div class="game-date">2/21<span class="date-sub">大阪府</span></div>
+      <div class="game-result result-b">増田勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第3局</div>
+      <div class="game-date">3/1<span class="date-sub">東京都</span></div>
+      <div class="game-result result-b">増田勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第4局</div>
+      <div class="game-date">3/15<span class="date-sub">栃木県</span></div>
+      <div class="game-result result-next">次の対局</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第5局</div>
+      <div class="game-date">3/29<span class="date-sub">未定（必要な場合）</span></div>
+      <div class="game-result result-future">予定</div>
+    </div>
+  </div>
+</div>
+
+<!-- 挑戦者決定済み -->
+<div class="section-header">
+  <div class="section-label">挑戦者決定・今後開幕</div>
+  <div class="section-line"></div>
+</div>
+
+<!-- 名人戦 -->
+<div class="title-card">
+  <div class="card-header">
+    <div class="card-banner" style="background:#c8943a;"></div>
+    <div class="card-title-info">
+      <div class="title-name">名人戦</div>
+      <div class="title-period">第84期 七番勝負</div>
+    </div>
+    <div class="card-status">
+      <div class="status-badge status-decided">開幕待ち</div>
+    </div>
+  </div>
+  <div class="matchup">
+    <div class="player">
+      <div class="player-role">名人（防衛側）</div>
+      <div class="player-name">藤井聡太</div>
+      <div class="player-rank">名人</div>
+    </div>
+    <div class="vs-divider">対</div>
+    <div class="player">
+      <div class="player-role">挑戦者</div>
+      <div class="player-name">糸谷哲郎</div>
+      <div class="player-rank">八段</div>
+    </div>
+  </div>
+  <div class="schedule-list">
+    <div class="schedule-item">
+      <div class="game-num">第1局</div>
+      <div class="game-date">4/8–9<span class="date-sub">未定</span></div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第2局</div>
+      <div class="game-date">4/25–26</div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第3局</div>
+      <div class="game-date">5/7–8</div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第4局</div>
+      <div class="game-date">5/16–17</div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第5局</div>
+      <div class="game-date">5/26–27</div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第6局</div>
+      <div class="game-date">6/9–10</div>
+      <div class="game-result result-future">予定</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第7局</div>
+      <div class="game-date">6/25<span class="date-sub">必要な場合</span></div>
+      <div class="game-result result-future">予定</div>
+    </div>
+  </div>
+</div>
+
+<!-- 叡王戦 -->
+<div class="title-card">
+  <div class="card-header">
+    <div class="card-banner" style="background:#4a2c6b;"></div>
+    <div class="card-title-info">
+      <div class="title-name">叡王戦</div>
+      <div class="title-period">第11期 五番勝負</div>
+    </div>
+    <div class="card-status">
+      <div class="status-badge status-decided">挑決中</div>
+    </div>
+  </div>
+  <div class="matchup">
+    <div class="player">
+      <div class="player-role">叡王（防衛側）</div>
+      <div class="player-name">伊藤匠</div>
+      <div class="player-rank">叡王</div>
+    </div>
+    <div class="vs-divider">対</div>
+    <div class="player">
+      <div class="player-role">挑戦者決定戦</div>
+      <div class="player-name">永瀬 or 斎藤</div>
+      <div class="player-rank">決勝 3/12</div>
+    </div>
+  </div>
+  <div class="schedule-list">
+    <div class="schedule-item">
+      <div class="game-num">決勝</div>
+      <div class="game-date">3/12<span class="date-sub">永瀬拓矢九段 vs 斎藤慎太郎八段</span></div>
+      <div class="game-result result-next">本日</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第1局</div>
+      <div class="game-date">4月下旬〜<span class="date-sub">挑戦者確定後に発表</span></div>
+      <div class="game-result result-future">予定</div>
+    </div>
+  </div>
+</div>
+
+<!-- 今後のタイトル戦 -->
+<div class="section-header">
+  <div class="section-label">今後開幕予定</div>
+  <div class="section-line"></div>
+</div>
+
+<div class="upcoming-card">
+  <div class="upcoming-item">
+    <div class="up-date">6〜8月</div>
+    <div>
+      <div class="up-title">棋聖戦 <span style="font-size:11px;font-weight:300;">第97期</span></div>
+      <div class="up-sub">五番勝負 ／ 保持者：藤井聡太棋聖</div>
+    </div>
+  </div>
+  <div class="upcoming-item">
+    <div class="up-date">7〜9月</div>
+    <div>
+      <div class="up-title">王位戦 <span style="font-size:11px;font-weight:300;">第67期</span></div>
+      <div class="up-sub">七番勝負 ／ 保持者：藤井聡太王位</div>
+    </div>
+  </div>
+  <div class="upcoming-item">
+    <div class="up-date">9〜10月</div>
+    <div>
+      <div class="up-title">王座戦 <span style="font-size:11px;font-weight:300;">第74期</span></div>
+      <div class="up-sub">五番勝負 ／ 保持者：伊藤匠王座</div>
+    </div>
+  </div>
+  <div class="upcoming-item">
+    <div class="up-date">10月〜</div>
+    <div>
+      <div class="up-title">竜王戦 <span style="font-size:11px;font-weight:300;">第39期</span></div>
+      <div class="up-sub">七番勝負 ／ 保持者：藤井聡太竜王</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  ※2026年3月14日時点の情報です<br>
+  日程・会場は変更になる場合があります
+</footer>
+
+<script>
+// ページ内データ（AI検索のコンテキストとして使用）
+const SHOGI_CONTEXT = `
+【2026年将棋タイトル戦 最新情報（2026年3月14日時点）】
+
+■ 王将戦（第75期）七番勝負
+- 対戦：藤井聡太王将 vs 永瀬拓矢九段（挑戦者）
+- スコア：藤井 4勝1敗（王将防衛まであと1勝）
+- 第1局 1/11-12 藤井勝 / 第2局 1/24-25 藤井勝 / 第3局 2/3-4 藤井勝 / 第4局 2/17-18 永瀬勝 / 第5局 3/8-9 藤井勝
+- 第6局：3/18-19（予定）
+
+■ 棋王戦（第51期）五番勝負
+- 対戦：藤井聡太棋王 vs 増田康宏八段（挑戦者）
+- スコア：増田 2勝1敗（増田がリード。藤井はかど番）
+- 第1局 2/8 藤井勝 / 第2局 2/21 増田勝 / 第3局 3/1 増田勝
+- 第4局：3/15（本日または明日）
+
+■ 名人戦（第84期）七番勝負
+- 対戦：藤井聡太名人 vs 糸谷哲郎八段（挑戦者）
+- 開幕：4/8-9（予定）
+
+■ 叡王戦（第11期）五番勝負
+- 保持者：伊藤匠叡王
+- 挑戦者決定戦：3/12 永瀬拓矢九段 vs 斎藤慎太郎八段
+
+■ 今後のタイトル戦
+- 棋聖戦（第97期）：6〜8月、藤井聡太棋聖
+- 王位戦（第67期）：7〜9月、藤井聡太王位
+- 王座戦（第74期）：9〜10月、伊藤匠王座
+- 竜王戦（第39期）：10月〜、藤井聡太竜王
+
+■ 現在のタイトル保持状況
+- 藤井聡太：竜王・名人・王位・棋聖・棋王・王将の六冠
+- 伊藤匠：叡王・王座の二冠
+
+■ 2025年度終了タイトル戦
+- 王座戦（第73期）：伊藤匠が藤井聡太から王座を奪取（3勝2敗）
+- 竜王戦（第38期）：藤井竜王が4連勝で防衛、永世竜王の資格獲得
+`;
+
+async function doSearch() {
+  const input = document.getElementById('search-input');
+  const query = input.value.trim();
+  if (!query) return;
+  await runSearch(query);
+}
+
+async function quickSearch(text) {
+  document.getElementById('search-input').value = text;
+  await runSearch(text);
+}
+
+async function runSearch(query) {
+  const btn = document.getElementById('search-btn');
+  const resultDiv = document.getElementById('ai-result');
+  const textDiv = document.getElementById('ai-text');
+  const dot = document.getElementById('ai-dot');
+
+  btn.disabled = true;
+  btn.textContent = '…';
+  resultDiv.classList.add('visible');
+  dot.style.animation = 'blink 1s infinite';
+  textDiv.innerHTML = '<div class="thinking"><div class="thinking-dot"></div><div class="thinking-dot"></div><div class="thinking-dot"></div></div>';
+
+  // スクロール
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `あなたは将棋タイトル戦の専門アシスタントです。以下の最新データをもとに、ユーザーの質問に日本語で簡潔・正確に答えてください。回答は3〜5文程度にまとめてください。マークダウン記法は使わず、自然な文章で答えてください。
+
+${SHOGI_CONTEXT}`,
+        messages: [{ role: 'user', content: query }]
+      })
+    });
+
+    const data = await response.json();
+    const answer = data.content?.map(b => b.text || '').join('') || '回答を取得できませんでした。';
+
+    // タイプライター風表示
+    textDiv.textContent = '';
+    dot.style.animation = 'none';
+    dot.style.opacity = '0.5';
+    let i = 0;
+    const interval = setInterval(() => {
+      textDiv.textContent += answer[i];
+      i++;
+      if (i >= answer.length) clearInterval(interval);
+    }, 18);
+
+  } catch (err) {
+    textDiv.textContent = 'エラーが発生しました。しばらくしてから再試行してください。';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '検索';
+  }
+}
+
+function closeResult() {
+  document.getElementById('ai-result').classList.remove('visible');
+  document.getElementById('search-input').value = '';
+}
+
+// Enterキー対応
+document.getElementById('search-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doSearch();
+});
+</script>
+</body>
+</html>
