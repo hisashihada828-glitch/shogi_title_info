@@ -1,0 +1,1 @@
+# shogi_title_info
