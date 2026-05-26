@@ -288,7 +288,7 @@
 <header>
   <div class="header-sub">SHOGI TITLE MATCHES 2026</div>
   <div class="header-title">将棋<span>八大</span>タイトル戦</div>
-  <div class="header-date">2026年5月10日時点</div>
+  <div class="header-date">2026年5月25日時点</div>
 </header>
 
 <!-- SEARCH -->
@@ -305,10 +305,10 @@
     <button class="search-btn" id="search-btn" onclick="doSearch()">検索</button>
   </div>
   <div class="search-chips">
-    <span class="search-chip" onclick="quickSearch('棋王戦の現在のスコアは？')">棋王戦スコア</span>
-    <span class="search-chip" onclick="quickSearch('王将戦の次の対局はいつ？')">王将戦日程</span>
-    <span class="search-chip" onclick="quickSearch('名人戦の挑戦者は誰？')">名人戦</span>
-    <span class="search-chip" onclick="quickSearch('叡王戦の挑戦者は誰に決まった？')">叡王戦</span>
+    <span class="search-chip" onclick="quickSearch('叡王戦の現在のスコアは？')">叡王戦スコア</span>
+    <span class="search-chip" onclick="quickSearch('叡王戦第5局はいつ？')">叡王戦第5局</span>
+    <span class="search-chip" onclick="quickSearch('名人戦の結果は？')">名人戦結果</span>
+    <span class="search-chip" onclick="quickSearch('棋聖戦の対戦カードは？')">棋聖戦</span>
     <span class="search-chip" onclick="quickSearch('藤井聡太は現在何冠？')">藤井聡太</span>
   </div>
 </div>
@@ -335,83 +335,6 @@
 <div class="section-header">
   <div class="section-label">進行中</div>
   <div class="section-line"></div>
-</div>
-
-<!-- 名人戦 -->
-<div class="title-card">
-  <div class="card-header">
-    <div class="card-banner" style="background:#c8943a;"></div>
-    <div class="card-title-info">
-      <div class="title-name">名人戦</div>
-      <div class="title-period">第84期 七番勝負</div>
-    </div>
-    <div class="card-status">
-      <div class="status-badge status-ongoing">● 進行中</div>
-    </div>
-  </div>
-  <div class="matchup">
-    <div class="player">
-      <div class="player-role">名人（防衛側）</div>
-      <div class="player-name">藤井聡太</div>
-      <div class="player-rank">名人</div>
-    </div>
-    <div class="vs-divider">対</div>
-    <div class="player">
-      <div class="player-role">挑戦者</div>
-      <div class="player-name">糸谷哲郎</div>
-      <div class="player-rank">九段</div>
-    </div>
-  </div>
-  <div class="score-row">
-    <div class="score-label">SCORE</div>
-    <div class="score-dots">
-      <div class="dot dot-win-a">藤</div>
-      <div class="dot dot-win-a">藤</div>
-      <div class="dot dot-win-a">藤</div>
-      <div class="dot dot-empty"></div>
-      <div class="dot dot-empty"></div>
-      <div class="dot dot-empty"></div>
-      <div class="dot dot-empty"></div>
-    </div>
-    <div class="score-text">藤井 3–0</div>
-  </div>
-  <div class="schedule-list">
-    <div class="schedule-item">
-      <div class="game-num">第1局</div>
-      <div class="game-date">4/8–9<span class="date-sub">東京都・ホテル椿山荘東京</span></div>
-      <div class="game-result result-a">藤井勝</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第2局</div>
-      <div class="game-date">4/25–26<span class="date-sub">青森県・ホテル青森</span></div>
-      <div class="game-result result-a">藤井勝</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第3局</div>
-      <div class="game-date">5/7–8<span class="date-sub">石川県七尾市・和倉温泉 のと楽</span></div>
-      <div class="game-result result-a">藤井勝</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第4局</div>
-      <div class="game-date">5/16–17<span class="date-sub">大阪府高槻市</span></div>
-      <div class="game-result result-next">次の対局</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第5局</div>
-      <div class="game-date">5/26–27</div>
-      <div class="game-result result-future">予定</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第6局</div>
-      <div class="game-date">6/9–10</div>
-      <div class="game-result result-future">予定</div>
-    </div>
-    <div class="schedule-item">
-      <div class="game-num">第7局</div>
-      <div class="game-date">6/25<span class="date-sub">必要な場合</span></div>
-      <div class="game-result result-future">予定</div>
-    </div>
-  </div>
 </div>
 
 <!-- 叡王戦 -->
@@ -445,10 +368,10 @@
       <div class="dot dot-win-a">伊</div>
       <div class="dot dot-win-a">伊</div>
       <div class="dot dot-win-b">斎</div>
-      <div class="dot dot-empty"></div>
+      <div class="dot dot-win-b">斎</div>
       <div class="dot dot-empty"></div>
     </div>
-    <div class="score-text">伊藤 2–1</div>
+    <div class="score-text">2–2</div>
   </div>
   <div class="schedule-list">
     <div class="schedule-item">
@@ -468,13 +391,13 @@
     </div>
     <div class="schedule-item">
       <div class="game-num">第4局</div>
-      <div class="game-date">5月下旬</div>
-      <div class="game-result result-future">予定</div>
+      <div class="game-date">5/23<span class="date-sub">大阪府泉佐野市</span></div>
+      <div class="game-result result-b">斎藤勝</div>
     </div>
     <div class="schedule-item">
       <div class="game-num">第5局</div>
-      <div class="game-date">5/31<span class="date-sub">千葉県柏市（必要な場合）</span></div>
-      <div class="game-result result-future">予定</div>
+      <div class="game-date">5/31<span class="date-sub">千葉県柏市</span></div>
+      <div class="game-result result-next">次の対局</div>
     </div>
   </div>
 </div>
@@ -483,6 +406,68 @@
 <div class="section-header">
   <div class="section-label">今期終了</div>
   <div class="section-line"></div>
+</div>
+
+<!-- 名人戦 -->
+<div class="title-card">
+  <div class="card-header">
+    <div class="card-banner" style="background:#c8943a;"></div>
+    <div class="card-title-info">
+      <div class="title-name">名人戦</div>
+      <div class="title-period">第84期 七番勝負</div>
+    </div>
+    <div class="card-status">
+      <div class="status-badge status-decided">藤井 防衛 4連覇</div>
+    </div>
+  </div>
+  <div class="matchup">
+    <div class="player">
+      <div class="player-role">名人（防衛側）</div>
+      <div class="player-name">藤井聡太</div>
+      <div class="player-rank">名人 4連覇</div>
+    </div>
+    <div class="vs-divider">対</div>
+    <div class="player">
+      <div class="player-role">挑戦者</div>
+      <div class="player-name">糸谷哲郎</div>
+      <div class="player-rank">九段</div>
+    </div>
+  </div>
+  <div class="score-row">
+    <div class="score-label">最終</div>
+    <div class="score-dots">
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-win-a">藤</div>
+      <div class="dot dot-empty"></div>
+      <div class="dot dot-empty"></div>
+      <div class="dot dot-empty"></div>
+    </div>
+    <div class="score-text">藤井 4–0</div>
+  </div>
+  <div class="schedule-list">
+    <div class="schedule-item">
+      <div class="game-num">第1局</div>
+      <div class="game-date">4/8–9<span class="date-sub">東京都・ホテル椿山荘東京</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第2局</div>
+      <div class="game-date">4/25–26<span class="date-sub">青森県・ホテル青森</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第3局</div>
+      <div class="game-date">5/7–8<span class="date-sub">石川県七尾市・和倉温泉 のと楽</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+    <div class="schedule-item">
+      <div class="game-num">第4局</div>
+      <div class="game-date">5/16–17<span class="date-sub">大阪府高槻市</span></div>
+      <div class="game-result result-a">藤井勝</div>
+    </div>
+  </div>
 </div>
 
 <!-- 王将戦 -->
@@ -601,34 +586,31 @@
 </div>
 
 <footer>
-  ※2026年5月10日時点の情報です<br>
+  ※2026年5月25日時点の情報です<br>
   日程・会場は変更になる場合があります
 </footer>
 
 <script>
 // ページ内データ（AI検索のコンテキストとして使用）
 const SHOGI_CONTEXT = `
-【2026年将棋タイトル戦 最新情報（2026年5月10日時点）】
+【2026年将棋タイトル戦 最新情報（2026年5月25日時点）】
 
 ■ 現在のタイトル保持状況
 - 藤井聡太：竜王・名人・王位・棋聖・棋王・王将の六冠
 - 伊藤匠：叡王・王座の二冠
 
-■ 名人戦（第84期）七番勝負【進行中】
-- 対戦：藤井聡太名人 vs 糸谷哲郎九段（挑戦者）
-- スコア：藤井 3勝0敗
-- 第1局 4/8-9 東京都・ホテル椿山荘東京 藤井勝
-- 第2局 4/25-26 青森県・ホテル青森 藤井勝
-- 第3局 5/7-8 石川県七尾市・和倉温泉のと楽 藤井勝
-- 第4局：5/16-17 大阪府高槻市（次の対局）
-
-■ 叡王戦（第11期）五番勝負【進行中】
+■ 叡王戦（第11期）五番勝負【進行中・フルセット】
 - 対戦：伊藤匠叡王 vs 斎藤慎太郎八段（挑戦者）
-- スコア：伊藤 2勝1敗
+- スコア：2勝2敗（タイ）
 - 第1局 4/3 シンガポール 伊藤勝
 - 第2局 4/18 石川県加賀市 伊藤勝
 - 第3局 5/3 愛知県名古屋市 斎藤勝
-- 第5局：5/31 千葉県柏市（必要な場合）
+- 第4局 5/23 大阪府泉佐野市 斎藤勝
+- 第5局：5/31 千葉県柏市（次の対局・最終局）
+
+■ 名人戦（第84期）七番勝負【終了】
+- 藤井聡太名人が糸谷哲郎九段を4勝0敗（4連勝）で退け、4連覇達成
+- 第4局 5/16-17 大阪府高槻市 藤井勝（最終局）
 
 ■ 王将戦（第75期）七番勝負【終了】
 - 藤井聡太王将が永瀬拓矢九段を4勝3敗で退け、5連覇達成
