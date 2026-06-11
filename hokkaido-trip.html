@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>北海道エスコン遠征 旅程表 2026.6.12-14</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%);
+    color: white;
+    padding: 52px 20px 44px;
+    text-align: center;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=1200&q=80') center/cover no-repeat;
+    opacity: 0.15;
+  }
+  .hero-inner { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 999px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    padding: 5px 16px;
+    margin-bottom: 16px;
+    color: #bfdbfe;
+  }
+  .hero h1 {
+    font-size: clamp(26px, 6vw, 42px);
+    font-weight: 900;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    animation: fadeDown 0.7s ease forwards;
+  }
+  .hero-sub {
+    font-size: 15px;
+    color: #bfdbfe;
+    margin-bottom: 22px;
+  }
+  .matchup {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 12px 22px;
+  }
+  .team-label { font-size: 15px; font-weight: 700; color: #e0e7ff; }
+  .vs-badge { font-family: 'DM Mono', monospace; font-size: 15px; color: #fbbf24; }
+
+  /* ===== CONTAINER ===== */
+  .container { max-width: 700px; margin: 0 auto; padding: 0 16px 60px; }
+
+  /* ===== ADVICE BOX ===== */
+  .advice-box {
+    background: #fffbeb;
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 28px 0 0;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.1);
+  }
+  .advice-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+  .advice-box p { font-size: 14px; color: #78350f; line-height: 1.8; }
+  .advice-box strong { color: #92400e; font-weight: 700; }
+
+  /* ===== DAY SECTION ===== */
+  .day-section {
+    margin-top: 32px;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .day-section.visible { opacity: 1; transform: translateY(0); }
+
+  /* DAY HEADER */
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px 12px 0 0;
+    padding: 14px 18px;
+    border-bottom: 3px solid #1d4ed8;
+  }
+  .day-badge {
+    background: #1d4ed8;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .day-title { font-size: 17px; font-weight: 700; flex: 1; }
+  .game-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+    flex-shrink: 0;
+  }
+  .badge-night { background: #e0e7ff; color: #3730a3; }
+  .badge-day   { background: #dcfce7; color: #14532d; }
+
+  /* ===== TABLE ===== */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .schedule-table thead tr {
+    background: #6c8fdf;
+    color: white;
+  }
+  .schedule-table thead th {
+    padding: 11px 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .schedule-table thead th:first-child { width: 80px; }
+  .schedule-table thead th:last-child  { width: 42%; }
+
+  .schedule-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+  }
+  .schedule-table tbody tr:last-child { border-bottom: none; }
+  .schedule-table tbody tr:hover { background: #f8fafc; }
+
+  .schedule-table td {
+    padding: 13px 14px;
+    font-size: 15px;
+    vertical-align: top;
+    line-height: 1.65;
+  }
+  .td-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d4ed8;
+    white-space: nowrap;
+  }
+  .td-action { font-weight: 600; color: #1e293b; }
+  .td-note { font-size: 13px; color: #475569; line-height: 1.7; }
+  .td-note strong { color: #1e293b; font-weight: 700; }
+
+  /* 特別行 */
+  .row-game { background: #fffbeb !important; }
+  .row-game:hover { background: #fef9e0 !important; }
+  .row-game .td-time { color: #d97706; }
+  .row-game .td-action { color: #92400e; font-size: 16px; }
+
+  .row-hotel { background: #faf5ff !important; }
+  .row-hotel:hover { background: #f3e8ff !important; }
+  .row-hotel .td-time { color: #7c3aed; }
+
+  .row-food { background: #f0fdf4 !important; }
+  .row-food:hover { background: #e8fdf0 !important; }
+  .row-food .td-time { color: #15803d; }
+
+  .row-flight { background: #eff6ff !important; }
+  .row-flight:hover { background: #dbeafe !important; }
+
+  .game-pill {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    color: #78350f;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ===== TIPS ===== */
+  .tips-section {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 32px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .tip-item {
+    display: flex;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: flex-start;
+  }
+  .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .tip-icon { font-size: 20px; flex-shrink: 0; line-height: 1.5; }
+  .tip-title { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+  .tip-text { font-size: 13px; color: #475569; line-height: 1.7; }
+
+  /* ===== PACKING CHECKLIST ===== */
+  .pack-category {
+    margin-bottom: 18px;
+  }
+  .pack-category:last-child { margin-bottom: 0; }
+  .pack-cat-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1d4ed8;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #dbeafe;
+  }
+  .pack-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  @media (max-width: 460px) { .pack-list { grid-template-columns: 1fr; } }
+  .pack-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #334155;
+    padding: 7px 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .pack-list li:hover { background: #f1f5f9; }
+  .pack-list li.checked {
+    background: #f0fdf4;
+    border-color: #86efac;
+    color: #15803d;
+    text-decoration: line-through;
+    opacity: 0.75;
+  }
+  .pack-list li input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: #1d4ed8;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .pack-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    background: linear-gradient(to top, #0f172a, #1e293b);
+    color: #94a3b8;
+    text-align: center;
+    padding: 36px 20px 48px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+  .footer span { color: #60a5fa; font-weight: 600; }
+  .footer-sub { font-size: 11px; color: #475569; margin-top: 6px; }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">TRAVEL ITINERARY · 2026.06.12–14</div>
+    <h1>北海道エスコン遠征<br>旅程表</h1>
+    <p class="hero-sub">札幌プリンスホテル 2泊</p>
+    <div class="matchup">
+      <span class="team-label">北海道日本ハム</span>
+      <span class="vs-badge">VS</span>
+      <span class="team-label">中日ドラゴンズ</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===== 持ち物リスト ===== -->
+  <div class="tips-section day-section" id="packing">
+    <div class="section-title">🎒 持ち物リスト</div>
+
+    <div class="pack-category">
+      <div class="pack-cat-title">👕 衣類</div>
+      <ul class="pack-list">
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🧥</span>薄手のジャケット・ウィンドブレーカー</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">👕</span>長袖トップス・重ね着できる服</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">☂️</span>折りたたみ傘・レインコート</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">⚾</span>ドラゴンズ ユニフォーム・グッズ</li>
+      </ul>
+    </div>
+
+    <div class="pack-category">
+      <div class="pack-cat-title">💳 書類・カード類</div>
+      <ul class="pack-list">
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🎫</span>チケット（QRコードのスクショ）</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">✈️</span>航空券（ピーチアプリorスクショ）</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🪪</span>マイナ保険証</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">💳</span>クレジットカード · 現金</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🚃</span>SuicaまたはICカード（チャージ済み）</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">📋</span>ホテル確認番号のメモ</li>
+      </ul>
+    </div>
+
+    <div class="pack-category">
+      <div class="pack-cat-title">⚠️ 忘れがちなもの</div>
+      <ul class="pack-list">
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🔋</span>モバイルバッテリー＋充電ケーブル</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">😷</span>マスク（予備も数枚）</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">👁️</span>コンタクト（予備・保存液・ケース）</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">👓</span>メガネ</li>
+      </ul>
+    </div>
+
+    <div class="pack-category">
+      <div class="pack-cat-title">🧴 洗面・衛生用品</div>
+      <ul class="pack-list">
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🪥</span>歯ブラシ・歯磨き粉</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🪒</span>髭剃り · 整髪料</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🤲</span>ハンドクリーム</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🧻</span>ティッシュ・ウェットティッシュ</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">💊</span>常備薬</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🌞</span>日焼け止め（市内散策用）</li>
+      </ul>
+    </div>
+
+    <div class="pack-category">
+      <div class="pack-cat-title">✅ あると便利</div>
+      <ul class="pack-list">
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">👜</span>エコバッグ</li>
+        <li onclick="toggleCheck(this)"><input type="checkbox"><span class="pack-icon">🎒</span>小型折りたたみバッグ</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- ===== DAY 1 ===== -->
+  <div class="day-section" id="day1">
+    <div class="day-header">
+      <span class="day-badge">DAY 1 · 金</span>
+      <span class="day-title">6月12日（金）</span>
+      <span class="game-badge badge-night">NIGHT 18:00〜</span>
+    </div>
+    <table class="schedule-table">
+      <thead><tr><th>時間</th><th>行動</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="td-time">05:45</td>
+          <td class="td-action">🏠 自宅 出発</td>
+          <td class="td-note">車で中部国際空港へ（約1時間）</td>
+        </tr>
+        <tr>
+          <td class="td-time">06:45</td>
+          <td class="td-action">✈️ 中部国際空港 到着</td>
+          <td class="td-note">搭乗手続き・セキュリティチェック</td>
+        </tr>
+        <tr class="row-flight">
+          <td class="td-time">07:25</td>
+          <td class="td-action">✈️ MM461 出発</td>
+          <td class="td-note">名古屋（中部）→ 札幌（新千歳）<br>ピーチアビエーション · 約1時間45分</td>
+        </tr>
+        <tr class="row-flight">
+          <td class="td-time">09:10</td>
+          <td class="td-action">🛬 新千歳空港 到着</td>
+          <td class="td-note">手荷物受取・移動・電車待ち含め<br>乗車は9:50〜10:00頃の見込み</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:00頃</td>
+          <td class="td-action">🚃 新千歳 → 札幌駅</td>
+          <td class="td-note">快速エアポート · 約36分 · 1,150円<br>10:35〜10:40頃着</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:40頃</td>
+          <td class="td-action">🚇 札幌駅 → 西11丁目駅</td>
+          <td class="td-note">地下鉄南北線→大通乗換→東西線 · 約15分 · 210円<br>※無料シャトルバスも利用可（約20分・1時間おき）</td>
+        </tr>
+        <tr class="row-hotel">
+          <td class="td-time">11:00〜</td>
+          <td class="td-action">🏨 プリンスホテル 荷物預け</td>
+          <td class="td-note">西11丁目駅2番出口から徒歩約3分<br>確認番号：43794SF088918</td>
+        </tr>
+        <tr>
+          <td class="td-time">11:15〜</td>
+          <td class="td-action">🏛️ 札幌市内散策</td>
+          <td class="td-note">大通公園・時計台・北海道庁旧本庁舎（赤れんが）</td>
+        </tr>
+        <tr class="row-food">
+          <td class="td-time">12:30〜</td>
+          <td class="td-action">🍽️ ランチ</td>
+          <td class="td-note">すすきの・狸小路周辺<br>ジンギスカン・スープカレー・海鮮など</td>
+        </tr>
+        <tr>
+          <td class="td-time">14:00〜</td>
+          <td class="td-action">🛍️ ショッピング・カフェ</td>
+          <td class="td-note">狸小路でお土産を先に購入しておくと帰りが楽</td>
+        </tr>
+        <tr>
+          <td class="td-time">16:00</td>
+          <td class="td-action">🚃 札幌駅 → 北広島駅</td>
+          <td class="td-note">快速エアポート · 乗り換えなし · 約17分 · 1,090円<br>電車待ち含め16:20頃着見込み</td>
+        </tr>
+        <tr>
+          <td class="td-time">16:20頃</td>
+          <td class="td-action">🚌 北広島駅 → エスコン</td>
+          <td class="td-note">シャトルバス · バス待ち含め約30〜40分<br>17:00頃エスコン着</td>
+        </tr>
+        <tr class="row-food">
+          <td class="td-time">17:00〜</td>
+          <td class="td-action">⚾ エスコン入場 · 夕食</td>
+          <td class="td-note">スタジアムグルメで夕食<br>ジンギスカン・海鮮・ザンギなど</td>
+        </tr>
+        <tr class="row-game">
+          <td class="td-time">18:00</td>
+          <td class="td-action">⚾ 試合開始 <span class="game-pill">1st GAME</span></td>
+          <td class="td-note">日本ハム vs 中日 · 交流戦 第1戦</td>
+        </tr>
+        <tr>
+          <td class="td-time">21:30頃</td>
+          <td class="td-action">🏟️ 試合終了 · 移動</td>
+          <td class="td-note">エスコン→北広島駅（シャトルバス）<br>→快速エアポートで札幌駅（約17分）</td>
+        </tr>
+        <tr class="row-hotel">
+          <td class="td-time">23:00頃</td>
+          <td class="td-action">🏨 ホテル チェックイン</td>
+          <td class="td-note">札幌プリンスホテル · 荷物は昼間に預け済み</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== DAY 2 ===== -->
+  <div class="day-section" id="day2">
+    <div class="day-header">
+      <span class="day-badge">DAY 2 · 土</span>
+      <span class="day-title">6月13日（土）</span>
+      <span class="game-badge badge-day">DAY 13:00〜</span>
+    </div>
+    <table class="schedule-table">
+      <thead><tr><th>時間</th><th>行動</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr class="row-food">
+          <td class="td-time">08:00〜</td>
+          <td class="td-action">🍳 ホテル朝食</td>
+          <td class="td-note">クラブブレックファースト（2名分）</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:00</td>
+          <td class="td-action">🚃 札幌駅 → 北広島駅</td>
+          <td class="td-note">快速エアポート · 乗り換えなし · 約17分 · 1,090円</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:30〜</td>
+          <td class="td-action">⚾ エスコン入場</td>
+          <td class="td-note">試合2時間半前に現地入り<br>練習見学・スタジアムランチ</td>
+        </tr>
+        <tr class="row-game">
+          <td class="td-time">13:00</td>
+          <td class="td-action">⚾ 試合開始 <span class="game-pill">2nd GAME</span></td>
+          <td class="td-note">日本ハム vs 中日 · 交流戦 第2戦</td>
+        </tr>
+        <tr>
+          <td class="td-time">16:30頃</td>
+          <td class="td-action">🏟️ 試合終了 · 移動</td>
+          <td class="td-note">北広島→快速エアポート→札幌駅（約17分）<br>17:30〜18:00頃に札幌着</td>
+        </tr>
+        <tr class="row-food">
+          <td class="td-time">18:00〜</td>
+          <td class="td-action">🍖 夕食 · ジンギスカン</td>
+          <td class="td-note">すすきの周辺<br>🥇 だるま　🥈 ふくろう亭　🥉 松尾ジンギスカン<br><strong>※週末は前日に要予約</strong></td>
+        </tr>
+        <tr class="row-hotel">
+          <td class="td-time">21:00頃</td>
+          <td class="td-action">🏨 ホテル帰着</td>
+          <td class="td-note">札幌プリンスホテル</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== DAY 3 ===== -->
+  <div class="day-section" id="day3">
+    <div class="day-header">
+      <span class="day-badge">DAY 3 · 日</span>
+      <span class="day-title">6月14日（日）最終戦・帰路</span>
+      <span class="game-badge badge-day">DAY 13:00〜</span>
+    </div>
+    <table class="schedule-table">
+      <thead><tr><th>時間</th><th>行動</th><th>備考</th></tr></thead>
+      <tbody>
+        <tr class="row-food">
+          <td class="td-time">08:00〜</td>
+          <td class="td-action">🍳 ホテル朝食 · チェックアウト</td>
+          <td class="td-note">クラブブレックファースト（2名分）<br>荷物はフロントに預けるか持参</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:00</td>
+          <td class="td-action">🚃 札幌駅 → 北広島駅</td>
+          <td class="td-note">快速エアポート · 乗り換えなし · 約17分 · 1,090円</td>
+        </tr>
+        <tr>
+          <td class="td-time">10:30〜</td>
+          <td class="td-action">⚾ エスコン入場 · 最終戦</td>
+          <td class="td-note">3日間の締めくくり。竜の勝利で締めよう！</td>
+        </tr>
+        <tr class="row-game">
+          <td class="td-time">13:00</td>
+          <td class="td-action">⚾ 試合開始 <span class="game-pill">3rd GAME</span></td>
+          <td class="td-note">日本ハム vs 中日 · 交流戦 第3戦</td>
+        </tr>
+        <tr>
+          <td class="td-time">16:30頃</td>
+          <td class="td-action">🏟️ 試合終了 · 移動</td>
+          <td class="td-note">シャトルバスで北広島駅へ<br>→快速エアポートで新千歳空港（約20分）</td>
+        </tr>
+        <tr class="row-flight">
+          <td class="td-time">17:30頃</td>
+          <td class="td-action">✈️ 新千歳空港 到着</td>
+          <td class="td-note">フライトまで約3時間<br>お土産購入・夕食をゆっくり楽しむ</td>
+        </tr>
+        <tr class="row-food">
+          <td class="td-time">18:00〜</td>
+          <td class="td-action">🍣 夕食 · 空港グルメ</td>
+          <td class="td-note">🍣 函太郎（3F）　🍜 けやき（3F ラーメン道場）<br>🍛 スープカレー lavi（3F）<br><strong>※出発40分前には保安検査場へ</strong></td>
+        </tr>
+        <tr>
+          <td class="td-time">19:50</td>
+          <td class="td-action">🛍️ 保安検査場通過</td>
+          <td class="td-note">検査場内にもお土産店あり</td>
+        </tr>
+        <tr class="row-flight">
+          <td class="td-time">20:30</td>
+          <td class="td-action">✈️ MM468 出発</td>
+          <td class="td-note">札幌（新千歳）→ 名古屋（中部）<br>ピーチアビエーション · 約1時間50分</td>
+        </tr>
+        <tr class="row-flight">
+          <td class="td-time">22:20</td>
+          <td class="td-action">🛬 中部国際空港 到着</td>
+          <td class="td-note">車で帰宅（約1時間）· 23:30頃ご自宅着</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== チェックポイント ===== -->
+  <div class="tips-section day-section" id="tips">
+    <div class="section-title">📋 旅のチェックポイント</div>
+    <div class="tip-item">
+      <span class="tip-icon">🎫</span>
+      <div>
+        <div class="tip-title">チケット確認</div>
+        <div class="tip-text">3試合分のFチケ（QRコード）をスクリーンショット保存しておくと安心</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <span class="tip-icon">🌡️</span>
+      <div>
+        <div class="tip-title">服装・気候</div>
+        <div class="tip-text">6月の北海道は昼間20〜22℃前後。夜のナイターは肌寒くなるため軽い上着は必携。エスコンフィールドは全天候型屋根付きのため日焼け止めは市内散策用</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <span class="tip-icon">🍽️</span>
+      <div>
+        <div class="tip-title">土曜夕食の予約</div>
+        <div class="tip-text">すすきのの人気ジンギスカン店は週末特に混雑。前日か当日朝に必ず予約を</div>
+      </div>
+    </div>
+    <div class="tip-item">
+      <span class="tip-icon">🏨</span>
+      <div>
+        <div class="tip-title">ホテル確認番号</div>
+        <div class="tip-text">43794SF088918 · 初日はチェックイン前にフロントへ荷物預かりを相談可能</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>北海道エスコン遠征 旅程表 · <span>2026.06.12–14</span></p>
+  <p class="footer-sub">竜 WIN ALL 3 !</p>
+</footer>
+
+<script>
+  // チェックボックスのトグル
+  function toggleCheck(li) {
+    li.classList.toggle('checked');
+    const cb = li.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+  }
+
+  // スクロールアニメーション
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.06 });
+
+  document.querySelectorAll('.day-section').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
